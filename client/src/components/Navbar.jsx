@@ -22,7 +22,7 @@ export default function Navbar() {
     }
   };
   return (
-    <nav className="flex-no-wrap fixed top-0 z-10 w-full text-gray-900 dark:text-white text-base font-medium flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 ring shadow-xl ring-gray-900/5">
+    <nav className="flex-no-wrap fixed top-0 z-10 w-full text-gray-900 dark:text-white text-base font-medium flex items-center justify-between px-8 py-4 bg-white dark:bg-gray-800 ring shadow-sm ring-gray-900/5">
       <div>
         <Link href="/" className="flex items-center">
           <img src="/icon.png" alt="Website Icon" width="40" height="40" />

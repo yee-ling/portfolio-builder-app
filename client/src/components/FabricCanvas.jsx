@@ -1,5 +1,5 @@
 "use client";
-import { Box, Flex } from "@radix-ui/themes";
+import { Box, Flex, Button } from "@radix-ui/themes";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
   BoxIcon,
@@ -7,6 +7,8 @@ import {
   TextIcon,
   ImageIcon,
   StarFilledIcon,
+  Pencil1Icon,
+  ArrowLeftIcon,
 } from "@radix-ui/react-icons";
 import * as fabric from "fabric";
 import { useEffect } from "react";
@@ -14,7 +16,7 @@ import { deleteDraft } from "@/api/editorsApi";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import PublishToPortfolio from "./forms/PublishToPortfolio";
-import { DownloadIcon } from "@radix-ui/react-icons";
+import { DownloadIcon, TransformIcon } from "@radix-ui/react-icons";
 import { useAuth } from "@/context/AuthContext";
 import UpgradeToPro from "./UpgradeToPro";
 
@@ -33,14 +35,21 @@ export default function FabricCanvas({
 
     // Initialize Fabric.js canvas
     const canvas = new fabric.Canvas(canvasRef.current, {
-      height: 400,
-      width: 800,
+      // height: 400,
+      // width: 800,
+      height: 900,
+      width: 900,
       backgroundColor: "#ffffff",
       preserveObjectStacking: true,
     });
 
     // Store reference to the canvas
     fabricCanvasRef.current = canvas;
+    fabricCanvasRef.isDrawingMode = true;
+
+    // OPTIONAL: configure brush
+    // canvas.freeDrawingBrush.width = 5;
+    // canvas.freeDrawingBrush.color = "#000";
 
     // Notify parent that canvas is ready
     if (onCanvasReady) {
@@ -86,6 +95,29 @@ export default function FabricCanvas({
       selectable: true,
     });
     fabricCanvasRef.current.add(textbox);
+  };
+
+  //New: Add brush
+  const addBrush = () => {
+    const canvas = fabricCanvasRef.current;
+    if (!canvas) return;
+
+    canvas.isDrawingMode = true;
+    canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+
+    // const brush = new fabric.PencilBrush({
+    //   selectable: true,
+    // });
+
+    // Optional settings
+    canvas.freeDrawingBrush.width = 5;
+    canvas.freeDrawingBrush.color = "#000000";
+    // fabricCanvasRef.current.add(brush);
+  };
+
+  const toggleBrush = () => {
+    const canvas = fabricCanvasRef.current;
+    canvas.isDrawingMode = !canvas.isDrawingMode;
   };
 
   const handleSelectedColor = (color) => {
@@ -142,6 +174,79 @@ export default function FabricCanvas({
     link.click();
   };
 
+  // const analyzeLayout = async () => {
+  //   try {
+  //     const canvasJSON = fabricCanvasRef.current.toJSON();
+
+  //     const response = await fetch("http://127.0.0.1:8000/analyze", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         content: canvasJSON,
+  //       }),
+  //     });
+
+  //     const data = await response.json();
+
+  //     console.log("Analysis:", data);
+
+  //     toast.success(`Layout Score: ${data.analysis.score}`);
+
+  //     if (data.analysis.issues.length > 0) {
+  //       data.analysis.issues.forEach((issue) => {
+  //         toast.warning(issue);
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("Analysis failed");
+  //   }
+  // };
+  const analyzeLayout = async () => {
+    try {
+      const canvas = fabricCanvasRef.current;
+
+      const canvasJSON = canvas.toJSON();
+
+      // Check if canvas is empty
+      if (!canvasJSON.objects || canvasJSON.objects.length === 0) {
+        // toast.warning("No content to analyze");
+        toast.info("Add some elements to the canvas before analyzing");
+        return;
+      }
+
+      const response = await fetch("http://127.0.0.1:8000/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: canvasJSON,
+        }),
+      });
+
+      const data = await response.json();
+
+      toast.success(`Layout Score: ${data.analysis.score}`);
+
+      if (data.suggestions.length > 0) {
+        data.suggestions.forEach((suggestion) => {
+          toast.info(suggestion);
+        });
+      }
+      if (data.analysis.issues.length > 0) {
+        data.analysis.issues.forEach((issue) => {
+          toast.warning(issue);
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Analysis failed");
+    }
+  };
+
   useEffect(() => {
     const handleKeyUp = (e) => {
       const canvas = fabricCanvasRef.current;
@@ -188,7 +293,7 @@ export default function FabricCanvas({
           { offset: 0, color: colors[0] },
           { offset: 1, color: colors[1] },
         ],
-      })
+      }),
     );
 
     fabricCanvasRef.current.renderAll();
@@ -196,6 +301,64 @@ export default function FabricCanvas({
 
   return (
     <Box className="border-l-1 border-gray-500 md:col-span-1 mt-10">
+      {/* Top Bar
+      <div className="h-14 border-b border-border bg-card flex items-center justify-between px-4 flex-shrink-0">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => navigate("/my-portfolios")}
+          >
+            <ArrowLeftIcon className="h-4 w-4" />
+          </Button>
+          <input
+            // value={title}
+            // onChange={(e) => setTitle(e.target.value)}
+            className="h-8 w-48 sm:w-64 text-sm font-medium border-transparent hover:border-input focus:border-input"
+          />
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-2 mr-2">
+            <label className="text-xs text-muted-foreground">BG:</label>
+            <input
+              type="color"
+              // value={bgColor}
+              // onChange={(e) => setBgColor(e.target.value)}
+              className="w-6 h-6 rounded cursor-pointer border border-border"
+            />
+          </div>
+          {/* <Button
+            variant="outline"
+            size="sm"
+            onClick={handleSave}
+            disabled={saving}
+            className="gap-2"
+          >
+            {saving ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Save className="h-3.5 w-3.5" />
+            )}
+            Save Draft
+          </Button> 
+         <Button
+            size="sm"
+            onClick={handlePublish}
+            disabled={publishing}
+            className="gap-2"
+          >
+            {publishing ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Globe className="h-3.5 w-3.5" />
+            )}
+            Publish
+          </Button> 
+        </div>
+      </div> */}
+
       <Flex
         direction={{ base: "row", md: "column" }}
         wrap="wrap"
@@ -233,6 +396,19 @@ export default function FabricCanvas({
             <Flex direction="column" align="center" justify="center" gap="1">
               <TextIcon width="22" height="22" />
               <span>TextBox</span>
+            </Flex>
+          </button>
+          // Pencil Brush
+          <button
+            className="text-gray-900 focus:outline-none bg-white border border-gray-400 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 font-bold py-4 px-4 inline-flex justify-center items-center"
+            onClick={addBrush}
+            size="3"
+            color="gray"
+            variant="ghost"
+          >
+            <Flex direction="column" align="center" justify="center" gap="1">
+              <Pencil1Icon width="22" height="22" />
+              <span>Brush</span>
             </Flex>
           </button>
           <button
@@ -362,6 +538,15 @@ export default function FabricCanvas({
           <DownloadIcon className="w-4 h-4 mr-2" />
           <span>Download</span>
         </button>
+
+        {/* Analyze Button */}
+        {/* <button
+          onClick={analyzeLayout}
+          className="w-40 h-12 px-4 py-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-300 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 flex justify-center items-center"
+        >
+          <TransformIcon className="w-4 h-4 mr-2" />
+          <span>Analyze</span>
+        </button> */}
 
         <Dialog.Root>
           <Dialog.Trigger asChild>

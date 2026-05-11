@@ -1,5 +1,13 @@
 "use client";
-import { Box, Text, Strong, Flex, IconButton, Badge } from "@radix-ui/themes";
+import {
+  Box,
+  Text,
+  Strong,
+  Flex,
+  IconButton,
+  Badge,
+  Avatar,
+} from "@radix-ui/themes";
 import {
   Pencil2Icon,
   TrashIcon,
@@ -73,65 +81,172 @@ export default function PortfolioItem({
   };
 
   return (
-    <div className="max-w-sm rounded overflow-hidden shadow-lg">
-      <img
-        className="w-full h-60 border-4 border-indigo-200 border-l-indigo-500"
-        src={`${API_URL}/${portfolio.uploaded_file}`}
-        alt="..."
-      />
-      <div className="bg-white px-6 py-4">
-        <div className="font-bold text-xl mb-2">
-          <Link
-            className="text-gray-900 hover:underline"
-            href={`/portfolios/${portfolio._id}`}
+    <div className="group hover:rounded-lg overflow-hidden bg-white dark:bg-transparent hover:shadow-sm hover:scale-105 hover:bg-gray-200 dark:hover:bg-gray-500/40 transition-transform duration-300 ease-in-out">
+      <div className="hover:scale-[0.91] transition-transform duration-200 ease-in-out">
+        <Link href={`/portfolios/${portfolio._id}`}>
+          <img
+            className="w-full h-60 rounded-xl object-fill"
+            src={`${API_URL}/${portfolio.uploaded_file}`}
+            alt="..."
+          />
+        </Link>
+        {/* <div className="bg-white py-4"> */}
+        <div
+          className={`${isProfile ? "bg-transparent" : "bg-transparent"} mt-2`}
+        >
+          <div
+            className={`${
+              isProfile
+                ? "flex gap-2 items-center mb-2 justify-between"
+                : "flex gap-2 items-center mb-2"
+            }`}
           >
-            <Strong>{portfolio.title}</Strong>
-          </Link>
-        </div>
-        <p className="text-gray-800 text-base">{portfolio.description}</p>
-        <p className="text-gray-800 text-base">{portfolio.user.username}</p>
-      </div>
-      <div className="bg-white px-6 pb-2">
-        <Flex justify="between">
-          <Badge size="3" color="indigo">
-            {portfolio.category ? portfolio.category.tag : "No category"}
-          </Badge>
-          <Text as="h5" size="4" className="text-gray-800 font-bold">
-            <Flex gap="4">
-              <Flex gap="1">
-                <button onClick={handleLike}>
-                  {isLikedState ? <HeartFilledIcon /> : <HeartIcon />}
-                </button>
-                <div>{likesCount}</div>
+            <div className="flex gap-2 items-center">
+              <div className="font-bold text-xl">
+                <Link href={`/portfolios/${portfolio._id}`}>
+                  <h3 className="line-clamp-1 text-gray-900 dark:text-white text-base font-medium tracking-tight hover:underline">
+                    {portfolio.title}
+                  </h3>
+                </Link>
+              </div>
+              <Badge size="1" color="indigo" variant="surface">
+                {portfolio.category ? portfolio.category.tag : "No category"}
+              </Badge>
+            </div>
+            {isProfile && (
+              <Flex
+                gap="3"
+                className="opacity-0 group-hover:opacity-100 transition-opacity duration-100"
+              >
+                <Dialog.Root>
+                  <Box className="flex justify-center">
+                    <Dialog.Trigger asChild>
+                      <IconButton color="indigo" radius="full" size="2">
+                        <Pencil2Icon width="18" height="18" />
+                      </IconButton>
+                    </Dialog.Trigger>
+                    <EditPortfolio portfolio={portfolio} />
+                  </Box>
+                </Dialog.Root>
+
+                <IconButton
+                  color="red"
+                  size="2"
+                  radius="full"
+                  onClick={handleDelete}
+                >
+                  <TrashIcon width="18" height="18" />
+                </IconButton>
               </Flex>
-              <Flex gap="1">
-                <button onClick={handleSave}>
-                  {isSavedState ? <BookmarkFilledIcon /> : <BookmarkIcon />}
-                </button>
-                <div>{savesCount}</div>
-              </Flex>
+            )}
+          </div>
+          {isProfile && (
+            <Flex justify="between">
+              <p className="line-clamp-2 dark:text-white text-gray-800 text-base">
+                {portfolio.description}
+              </p>
+              <div className="flex gap-2">
+                <p className="text-gray-500 dark:text-gray-400 text-sm">
+                  {portfolio.user.username}
+                </p>
+              </div>
+              <Text as="h5" size="4" className="text-gray-800 font-bold">
+                <Flex gap="4">
+                  <Flex gap="1">
+                    <button
+                      className="text-gray-500 dark:text-gray-400"
+                      onClick={handleLike}
+                    >
+                      {isLikedState ? <HeartFilledIcon /> : <HeartIcon />}
+                    </button>
+                    <div className="text-gray-500 dark:text-gray-400">
+                      {likesCount}
+                    </div>
+                  </Flex>
+                  <Flex gap="1">
+                    <button
+                      className="text-gray-500 dark:text-gray-400"
+                      onClick={handleSave}
+                    >
+                      {isSavedState ? <BookmarkFilledIcon /> : <BookmarkIcon />}
+                    </button>
+                    <div className="text-gray-500 dark:text-gray-400">
+                      {savesCount}
+                    </div>
+                  </Flex>
+                </Flex>
+              </Text>
             </Flex>
-          </Text>
-        </Flex>
+          )}
+          {/* Avatar & Username */}
+          {!isProfile && (
+            <Flex justify="between">
+              <div className="flex gap-2">
+                {/* <Avatar
+                  variant="solid"
+                  color="orange"
+                  size="1"
+                  radius="full"
+                  fallback={portfolio.user.username[0].toUpperCase()}
+                /> */}
+                <p className="text-gray-500 dark:text-gray-400 text-sm">
+                  {portfolio.user.username}
+                </p>
+              </div>
+              <Text as="h5" size="4" className="text-gray-800 font-bold">
+                <Flex gap="4">
+                  <Flex gap="1">
+                    <button
+                      className="text-gray-500 dark:text-gray-400"
+                      onClick={handleLike}
+                    >
+                      {isLikedState ? <HeartFilledIcon /> : <HeartIcon />}
+                    </button>
+                    <div className="text-gray-500 dark:text-gray-400">
+                      {likesCount}
+                    </div>
+                  </Flex>
+                  <Flex gap="1">
+                    <button
+                      className="text-gray-500 dark:text-gray-400"
+                      onClick={handleSave}
+                    >
+                      {isSavedState ? <BookmarkFilledIcon /> : <BookmarkIcon />}
+                    </button>
+                    <div className="text-gray-500 dark:text-gray-400">
+                      {savesCount}
+                    </div>
+                  </Flex>
+                </Flex>
+              </Text>
+            </Flex>
+          )}
+        </div>
+        <div
+          className={`${
+            isProfile ? "bg-transparent px-4 pb-2" : "bg-transparent"
+          }`}
+        >
+          {/* Profile Page */}
+          {/* {isProfile && (
+            <Flex gap="2" className="mt-2">
+              <Dialog.Root>
+                <Box className="flex justify-center">
+                  <Dialog.Trigger asChild>
+                    <IconButton size="2">
+                      <Pencil2Icon width="18" height="18" />
+                    </IconButton>
+                  </Dialog.Trigger>
+                  <EditPortfolio portfolio={portfolio} />
+                </Box>
+              </Dialog.Root>
 
-        {isProfile && (
-          <Flex gap="2" className="mt-2">
-            <Dialog.Root>
-              <Box className="flex justify-center">
-                <Dialog.Trigger asChild>
-                  <IconButton size="2">
-                    <Pencil2Icon width="18" height="18" />
-                  </IconButton>
-                </Dialog.Trigger>
-                <EditPortfolio portfolio={portfolio} />
-              </Box>
-            </Dialog.Root>
-
-            <IconButton color="red" size="2" onClick={handleDelete}>
-              <TrashIcon width="18" height="18" />
-            </IconButton>
-          </Flex>
-        )}
+              <IconButton color="red" size="2" onClick={handleDelete}>
+                <TrashIcon width="18" height="18" />
+              </IconButton>
+            </Flex>
+          )} */}
+        </div>
       </div>
     </div>
   );

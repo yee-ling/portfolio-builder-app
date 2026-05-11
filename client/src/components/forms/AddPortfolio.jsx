@@ -49,7 +49,7 @@ export default function AddPortfolio() {
         <Box>
           <Dialog.Trigger asChild>
             <Flex align="center" justify="center">
-              <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+              <button className="bg-gradient-to-r from-pink-500 to-orange-400 hover:bg-gradient-to-bl text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
                 <PlusIcon className="w-4 h-4 mr-2" />
                 <span>Upload a Portfolio</span>
               </button>

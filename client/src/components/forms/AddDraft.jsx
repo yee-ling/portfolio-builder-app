@@ -81,7 +81,7 @@ export default function AddDraft() {
 
   return (
     <div className="min-h-screen mt-15 bg-white dark:bg-gray-800 grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
-      <Box className="md:col-span-2 mt-15">
+      <Box className="md:col-span-2 border-indigo-500 border-5 mt-15">
         <Flex direction="column" align="center" gap="3">
           <input
             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"

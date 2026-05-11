@@ -87,12 +87,17 @@ export default function Profile() {
 
   return (
     <Box>
-      <div className="min-h-screen bg-white dark:bg-gray-800 mt-15">
+      <div className="min-h-screen bg-white dark:bg-gray-800 mt-15 pb-4">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Profile Info */}
-            <Box className="col-span-1 mt-6">
-              <Flex direction="column" align="center" gap="4">
+            <Box className="col-span-1 mt-8">
+              <Flex
+                direction="column"
+                align="center"
+                gap="4"
+                className="ring rounded-lg py-8 dark:bg-gray-700 ring-gray-300 p-4"
+              >
                 <Avatar
                   variant="solid"
                   color="orange"
@@ -143,7 +148,10 @@ export default function Profile() {
                       </h3>
                     </DataList.Label>
                     <DataList.Value>
-                      <Flex align="center" gap="2">
+                      <h3 className="text-gray-900 dark:text-white mt-5 text-base font-medium tracking-tight">
+                        {user?.email}
+                      </h3>
+                      {/* <Flex align="center" gap="2">
                         <h3 className="text-gray-900 dark:text-white mt-5 text-base font-medium tracking-tight">
                           {user?.email}
                         </h3>
@@ -154,7 +162,7 @@ export default function Profile() {
                         >
                           <CopyIcon />
                         </IconButton>
-                      </Flex>
+                      </Flex> */}
                     </DataList.Value>
                   </DataList.Item>
                 </DataList.Root>
@@ -190,24 +198,24 @@ export default function Profile() {
                 <Box pt="3">
                   <Tabs.Content value="portfolio">
                     <div className="flex items-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      <Card>
+                      <div className="w-full h-full py-8 rounded-lg ring ring-gray-300 bg-gray-100 dark:ring-gray-500 dark:bg-gray-700">
                         <Flex
-                          gap="4"
+                          gap="6"
                           direction="column"
                           align="center"
                           justify="center"
-                          className="p-6"
+                          className="w-full h-full"
                         >
                           <AddPortfolio />
 
                           <Link href="/profile/editor">
-                            <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+                            <button className="bg-gradient-to-r from-indigo-500 to-pink-500 hover:bg-gradient-to-bl text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
                               <Pencil1Icon className="w-5 h-4 mr-2" />
                               <span>Create a Portfolio</span>
                             </button>
                           </Link>
                         </Flex>
-                      </Card>
+                      </div>
                       {portfolios.map((portfolio) => (
                         <PortfolioItem
                           key={portfolio._id}
@@ -251,23 +259,23 @@ export default function Profile() {
                     </div>
                   </Tabs.Content>
                   <Tabs.Content value="draft">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      <Card>
+                    <div className="flex items-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                      <div className="w-full h-full py-8 rounded-lg ring ring-gray-300 bg-gray-100 dark:ring-gray-500 dark:bg-gray-700">
                         <Flex
-                          gap="4"
+                          gap="6"
                           direction="column"
                           align="center"
                           justify="center"
-                          className="p-6"
+                          className="w-full h-full"
                         >
                           <Link href="/profile/editor">
-                            <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+                            <button className="bg-gradient-to-r from-teal-500 to-lime-500 hover:bg-gradient-to-bl text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
                               <Pencil1Icon className="w-5 h-4 mr-2" />
                               <span>Create a Portfolio</span>
                             </button>
                           </Link>
                         </Flex>
-                      </Card>
+                      </div>
 
                       {drafts?.map((draft) => (
                         <DraftItem key={draft._id} draft={draft} />
