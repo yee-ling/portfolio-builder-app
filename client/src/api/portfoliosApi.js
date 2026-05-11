@@ -47,7 +47,7 @@ export const editPortfolio = async (updatedPortfolio, updatedFile) => {
   const { data } = await axios.put(
     `${API_URL}/portfolios/${updatedPortfolio._id}`,
     formData,
-    { withCredentials: true }
+    { withCredentials: true },
   );
   return data;
 };

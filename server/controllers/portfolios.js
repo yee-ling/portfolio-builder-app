@@ -20,6 +20,25 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// const upload = multer({
+//   storage,
+//   limits: { fileSize: 20 * 1024 * 1024 },
+//   fileFilter(req, file, cb) {
+//     const allowed = [
+//       "image/png",
+//       "image/jpeg",
+//       "image/jpg",
+//       "image/gif",
+//       "video/mp4",
+//     ];
+//     if (!allowed.includes(file.mimetype)) {
+//       cb(new Error("Invalid file type. Only images and videos allowed."));
+//     } else {
+//       cb(null, true);
+//     }
+//   },
+// });
+
 // ADD PORTFOLIO
 router.post("/", isAuth, upload.single("uploaded_file"), async (req, res) => {
   try {

@@ -1,1 +1,34 @@
+# fc-yeeling_key.pem
+
+# private key
 fc-yeeling_key.pem
+
+# dependencies
+node_modules/
+**/node_modules/
+
+# env
+.env
+**/.env
+
+# Next.js
+.next/
+out/
+
+# build files
+dist/
+build/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

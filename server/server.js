@@ -9,9 +9,10 @@ const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://20.2.2.220/"],
+    // origin: ["http://localhost:3000", "http://20.2.2.220/"],
+    origin: ["http://localhost:3000"],
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 app.use(express.static("public"));
