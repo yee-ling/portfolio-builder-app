@@ -31,3 +31,8 @@ Usage:
 - Drag, resize, and arrange components freely
 - Customize your portfolio layout visually
 - Design and preview your portfolio in real time
+
+## Disclaimer
+
+Some images used in the screenshots are sourced from free stock libraries and are used for demonstration purposes only.
+All application design and functionality were built by me.
